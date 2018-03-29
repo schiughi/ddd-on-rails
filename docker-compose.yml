@@ -1,0 +1,30 @@
+version: '2'
+services:
+  db:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo:/data/db
+    env_file: ./.environments/mongodb.env
+  web:
+    build: 
+      context: .
+    command: bundle exec rails s -p 3001 -b '0.0.0.0'
+    volumes:
+      - .:/libroy
+      - bundle_install:/usr/local/bundle
+    env_file:
+      - ./.environments/rails.env
+      - ./.environments/mongodb.env
+    ports:
+      - "3001:3001"
+      - "8081:8081"
+    depends_on:
+      - db
+volumes:
+  mongo:
+    driver: local
+  bundle_install:
+    driver: local
