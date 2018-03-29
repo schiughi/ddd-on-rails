@@ -1,0 +1,13 @@
+@startuml
+
+  left to right direction
+  !include ../inc/color.inc
+  title libroy-usecase-request
+
+  actor customer
+
+  boundary home
+  boundary book_request_view
+  control book_request_controller
+
+@enduml

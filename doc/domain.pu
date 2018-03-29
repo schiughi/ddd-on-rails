@@ -1,0 +1,134 @@
+@startuml
+  !include inc/color.inc
+  title libroy-domain
+
+package BookDetails {
+  class BookDetails.Book <<Root>> #F6E5E4 {
+    +title: String
+    +isbn: Isbn
+    +authors: List<Authors>
+    +publisher: Publisher
+    +language: String
+    +translator: Translator
+  }
+
+  class BookDetails.Translator <<value>> #F2EBD9 {
+  }
+
+  class BookDetails.Author <<value>> #F2EBD9 {
+  }
+
+  class BookDetails.Publisher <<value>> #F2EBD9 {
+  }
+
+  class BookDetails.Isbn <<value>> #F2EBD9{
+  }
+
+  class BookDetails.BookRepository <<repository>> #DBF3DE {
+  }
+
+  BookDetails.Isbn -o BookDetails.Book
+  BookDetails.Book *-- BookDetails.Author
+  BookDetails.Book *-- BookDetails.Translator
+  BookDetails.Book *-- BookDetails.Publisher
+  BookDetails.BookRepository --> BookDetails.Book
+}
+
+
+package Inventories {
+
+  enum Inventories.Status {
+    requesting
+    ordering
+    keeping
+    reserving
+    lending
+  }
+
+  class Inventories.BookInventory <<Root>> #F6E5E4 {
+    +detail: Book
+    +stocks: List<BookStock>
+  }
+
+  class Inventories.BookStock <<value>> #F2EBD9 {
+    +serial: Integer
+    +circulations: List<Circulation>
+    +is(Status): Boolean
+  }
+  Inventories.BookInventory o-- "0..n" Inventories.BookStock
+  Inventories.BookStock o- "1" Inventories.Status
+}
+
+package Customers {
+  class Customers.Customer <<Root>> #F6E5E4 {
+    +name
+    +email
+  }
+
+  class Customers.Authentication {
+    +loginname
+    +password
+    +authenticate()
+  }
+  Customers.Customer *- Customers.Authentication
+}
+
+package Requests {
+  class Requests.BookRequest <<Root>> #F6E5E4 {
+  }
+
+  class Requests.Staff {
+    +order()
+  }
+  Requests.BookRequest o-- Requests.Staff
+}
+
+package Reservations {
+  class Reservations.Reservation <<Root>> #F6E5E4 {
+  }
+}
+
+package Circulations {
+  class Circulations.BookCirculation <<Root>> #F6E5E4 {
+
+  }
+
+}
+
+package Reviews {
+  class Reviews.BookReview <<Root>> #F6E5E4 {
+    +book
+    +comment
+    +rating
+  }
+
+  class Reviews.Comment {
+    +message
+  }
+
+  Reviews.BookReview *-- Reviews.Comment
+}
+
+package Search {
+  class SearchStockSearvice {
+    
+  }
+
+  class SearchBookSearvice {
+
+  }
+}
+
+Customers.Customer ----> BookDetails.BookRepository
+Customers.Customer --> Requests.BookRequest
+Customers.Customer --> Circulations.BookCirculation
+Customers.Customer --> Reservations.Reservation
+Customers.Customer --> Reviews.BookReview
+
+Requests.Staff -->  Inventories.BookInventory
+Circulations.BookCirculation --> Inventories.BookInventory
+Reservations.Reservation --> Inventories.BookInventory
+Reviews.BookReview --> Inventories.BookInventory
+
+Inventories.BookInventory ---> BookDetails.Book
+@enduml
