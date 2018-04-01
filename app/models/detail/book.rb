@@ -3,6 +3,7 @@ class Detail::Book < Aggregator
   include Mongoid::Timestamps
 
   field :title, type: String
+  field :description, type: String
   embeds_one :isbn
   embeds_many :authors
   embeds_one :publisher
